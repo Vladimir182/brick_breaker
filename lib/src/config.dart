@@ -1,2 +1,3 @@
 const gameWidth = 840.0;
 const gameHeight = 1600.0;
+const ballRadius = gameWidth * 0.02;

@@ -2,9 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame_pinboll/src/brick_breaker.dart';
-import 'package:flame_pinboll/src/components/bat.dart';
 import 'package:flame_pinboll/src/components/components.dart';
-import 'package:flame_pinboll/src/components/play_area.dart';
 import 'package:flutter/material.dart';
 
 class Ball extends CircleComponent

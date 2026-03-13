@@ -22,7 +22,7 @@ class _GameAppState extends State<GameApp> {
   void initState() {
     super.initState();
     game = BrickBreaker();
-  } // To here.
+  }
 
   @override
   Widget build(BuildContext context) {

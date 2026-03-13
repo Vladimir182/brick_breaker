@@ -25,9 +25,34 @@ class Ball extends CircleComponent
   final double difficultyModifier;
 
   @override
+  void render(Canvas canvas) {}
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+
+    // load a sprint
+    final sprite = await game.loadSprite('candy.png');
+
+    // We add it as a child so that it fills the entire area of the PositionComponent
+    add(
+      SpriteComponent(
+        sprite: sprite,
+        // ВАЖЛИВО: розмір картинки має бути дорівнювати діаметру (radius * 2)
+        size: Vector2.all(radius * 2),
+        // Центруємо картинку всередині м'яча
+        anchor: Anchor.center,
+        position: size / 2,
+      ),
+    );
+  }
+
+  @override
   void update(double dt) {
     super.update(dt);
     position += velocity * dt;
+
+    angle += velocity.length * 0.002 * dt;
   }
 
   @override
@@ -48,7 +73,6 @@ class Ball extends CircleComponent
           RemoveEffect(
             delay: 0.35,
             onComplete: () {
-              // Modify from here
               game.playState = PlayState.gameOver;
             },
           ),
@@ -60,7 +84,6 @@ class Ball extends CircleComponent
           velocity.x +
           (position.x - other.position.x) / other.size.x * game.width * 0.3;
     } else if (other is Brick) {
-      // Modify from here...
       if (position.y < other.position.y - other.size.y / 2) {
         velocity.y = -velocity.y;
       } else if (position.y > other.position.y + other.size.y / 2) {
@@ -70,7 +93,7 @@ class Ball extends CircleComponent
       } else if (position.x > other.position.x) {
         velocity.x = -velocity.x;
       }
-      velocity.setFrom(velocity * difficultyModifier); // To here.
+      velocity.setFrom(velocity * difficultyModifier);
     }
   }
 }

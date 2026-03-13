@@ -24,12 +24,14 @@ class BrickBreaker extends FlameGame
       );
 
   final ValueNotifier<int> score = ValueNotifier(0);
+  final Set<LogicalKeyboardKey> keysPressed = {};
   final rand = math.Random();
   double get width => size.x;
   double get height => size.y;
 
   late PlayState _playState;
   PlayState get playState => _playState;
+
   set playState(PlayState playState) {
     _playState = playState;
     switch (playState) {
@@ -87,7 +89,7 @@ class BrickBreaker extends FlameGame
 
     world.addAll([
       for (var i = 0; i < brickColors.length; i++)
-        for (var j = 1; j <= 5; j++)
+        for (var j = 1; j <= 3; j++)
           Brick(
             position: Vector2(
               (i + 0.5) * brickWidth + (i + 1) * brickGutter,
@@ -100,30 +102,57 @@ class BrickBreaker extends FlameGame
 
   @override
   void onTapDown(TapDownEvent event) {
-    // Додано аргумент event
     super.onTapDown(event);
     startGame();
   }
 
+  // Видали ОБИДВА старі методи onKeyEvent і встав цей один:
   @override
   KeyEventResult onKeyEvent(
     KeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
   ) {
     super.onKeyEvent(event, keysPressed);
-    if (event is KeyDownEvent) {
-      switch (event.logicalKey) {
-        case LogicalKeyboardKey.arrowLeft:
-          world.children.query<Bat>().first.moveBy(-batStep);
-        case LogicalKeyboardKey.arrowRight:
-          world.children.query<Bat>().first.moveBy(batStep);
-        case LogicalKeyboardKey.space:
-        case LogicalKeyboardKey.enter:
-          startGame();
-      }
+
+    // 1. Оновлюємо наш набір натиснутих клавіш
+    this.keysPressed.clear();
+    this.keysPressed.addAll(keysPressed);
+
+    // 2. Старт гри на Space/Enter
+    if (event is KeyDownEvent &&
+        (event.logicalKey == LogicalKeyboardKey.space ||
+            event.logicalKey == LogicalKeyboardKey.enter)) {
+      startGame();
     }
+
     return KeyEventResult.handled;
   }
+
+  // @override
+  // KeyEventResult onKeyEvent(
+  //   KeyEvent event,
+  //   Set<LogicalKeyboardKey> keysPressed,
+  // ) {
+  //   super.onKeyEvent(event, keysPressed);
+  //   if (event is KeyDownEvent) {
+  //     switch (event.logicalKey) {
+  //       case LogicalKeyboardKey.arrowLeft:
+  //       case LogicalKeyboardKey.arrowRight:
+  //         final bat = world.children.query<Bat>();
+  //         if (bat.isNotEmpty && playState == PlayState.playing) {
+  //           if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+  //             bat.first.moveBy(-batStep);
+  //           } else {
+  //             bat.first.moveBy(batStep);
+  //           }
+  //         }
+  //       case LogicalKeyboardKey.space:
+  //       case LogicalKeyboardKey.enter:
+  //         startGame();
+  //     }
+  //   }
+  //   return KeyEventResult.handled;
+  // }
 
   @override
   Color backgroundColor() => const Color(0xfff2e8cf);
